@@ -1,0 +1,18 @@
+:root {
+  font-family: poppins, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+  font-size: 62.5%;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  position: relative;
+  width: 151.2rem;
+  height: 9.82rem;
+  background: #fefefe;
+}
