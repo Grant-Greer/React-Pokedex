@@ -9,21 +9,29 @@ import StyledButton from "./components/styles/Button.styled";
 import { getPokemons } from "./services/getPokemons";
 
 export const Pokedex = () => {
-
+//initially the offset is 0
   const [offSet, setOffSet] = useState(0);
-
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    //prefetch is a method of the queryClient that allows us to fetch data before the user needs it
+    // when the offset changes from pressing the next or previous button, the query is invalidated
+    // fetches new data from the api and updates the cache so that the new data is displayed without loading screens
+    // set query key to pokemons to match the query key in the useQuery hook to check if the needed data is already in the cache
     const nextPage = offSet + 9;
     queryClient.prefetchQuery(["pokemons", nextPage], () => getPokemons(nextPage));
   }, [offSet, queryClient]);
 
-
+// useQuery fetches the API data and stores it in the cache
+// the queryKey is an array of strings and/or objects that uniquely identifies the query 
+// in other words it's a unique key to differentiate what is being fetched from our API
+// the queryKey is used to retrieve the data from the cache
+// with react query handling boolean states internally theres no need to handle them manually in global state
   const { isLoading, isError, isSuccess, error, data } = useQuery(["pokemons", offSet], () => getPokemons(offSet),
+  // staletime is for refetching and is set to 0ms by default. Set to infinity since it is static data that doesn't change
+  // keeps the previous data in the cache while the new data is being fetched
+  // this prevents the app from displaying a loading screen while the new data is being fetched 
   {staleTime: Infinity, keepPreviousData: true, });
-
-
 
   if (isLoading) {
     return <h3>Loading...</h3>
@@ -37,6 +45,7 @@ export const Pokedex = () => {
   if (isSuccess) {
 
     const pokemons = data;
+    console.log(pokemons);
     let num = offSet + 1;
     return (
       <StyledContentWrapper>  
@@ -60,6 +69,7 @@ export const Pokedex = () => {
           </PageNav>
         </Header>
         <StyledTileContainer> 
+          {/* returns an array and maps over the pokemons array to render a PokemonTile for each pokemon */ }
           { Object.entries(pokemons)[3][1].map((pokemon, index) => {
               return (
                 <PokemonTile key={index} pokemon={pokemon} image={num++} />
